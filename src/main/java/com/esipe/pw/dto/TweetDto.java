@@ -1,6 +1,6 @@
 package com.esipe.pw.dto;
 
-import com.esipe.pw.model.Tweet;
+import com.esipe.pw.model.Document;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -24,23 +24,26 @@ public class TweetDto {
 
     private String id;
     @NotBlank(message = "text must not be blank")
-    @Size(max = 256, message = "tweet is max 256")
-    private String text;
+    //@Size(max = 256, message = "tweet is max 256")
+    private String body;
     private Source source;
     @NotNull
-    private UserDto user;
+    private EditorDto editor;
+    @NotNull
+    private CreatorDto creator;
     @JsonFormat(pattern = ZONE_DATE_TIME_FORMAT)
     private ZonedDateTime created;
     @JsonFormat(pattern = ZONE_DATE_TIME_FORMAT)
     private ZonedDateTime modified;
 
 
-    public Tweet toEntity() {
-        return Tweet.builder()
+    public Document toEntity() {
+        return Document.builder()
                 .id(id)
-                .text(text)
+                .body(body)
                 .source(source)
-                .user(user.toEntity())
+                .creator(creator.toEntity())
+                .editor(editor.toEntity())
                 .build();
     }
 }

@@ -3,7 +3,7 @@ package com.esipe.pw.controller;
 
 import com.esipe.pw.dto.PageData;
 import com.esipe.pw.dto.TweetDto;
-import com.esipe.pw.model.Tweet;
+import com.esipe.pw.model.Document;
 import com.esipe.pw.service.TweetService;
 import com.esipe.pw.utils.RestUtils;
 import lombok.RequiredArgsConstructor;
@@ -45,13 +45,13 @@ public class TweetController {
     @ResponseBody
     public ResponseEntity<TweetDto> getTweet(@PathVariable("id") String tweetId) {
 
-        Tweet tweet = tweetService.getTweet(tweetId);
+        Document document = tweetService.getTweet(tweetId);
 
-        TweetDto tweetDto = tweet.toDto();
+        TweetDto tweetDto = document.toDto();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .eTag(tweet.getEtag())
+                .eTag(document.getEtag())
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.HOURS))
                 .lastModified(tweetDto.getModified())
                 .body(tweetDto);
@@ -63,8 +63,8 @@ public class TweetController {
                                                         @PageableDefault(page = 0, size = 20) Pageable pageable,
                                                         UriComponentsBuilder uriComponentsBuilder) {
 
-        Page<Tweet> results = tweetService.getTweets(query, pageable);
-        PageData<TweetDto> pageResult = PageData.fromPage(results.map(Tweet::toDto));
+        Page<Document> results = tweetService.getTweets(query, pageable);
+        PageData<TweetDto> pageResult = PageData.fromPage(results.map(Document::toDto));
         if (RestUtils.hasNext(results, pageable)) {
             pageResult.setNext(RestUtils.buildNextUri(uriComponentsBuilder, pageable));
         }
@@ -80,15 +80,15 @@ public class TweetController {
     public ResponseEntity<TweetDto>
     createTweet(@Valid @RequestBody TweetDto tweet, UriComponentsBuilder uriComponentsBuilder) {
 
-        Tweet createdTweet = tweetService.createTweet(tweet.toEntity());
+        Document createdDocument = tweetService.createTweet(tweet.toEntity());
         UriComponents uriComponents = uriComponentsBuilder.path(TweetController.PATH.concat("/{id}"))
-                .buildAndExpand(createdTweet.getId());
+                .buildAndExpand(createdDocument.getId());
 
-        TweetDto createdTweetDto = createdTweet.toDto();
+        TweetDto createdTweetDto = createdDocument.toDto();
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .eTag(createdTweet.getEtag())
+                .eTag(createdDocument.getEtag())
                 .lastModified(createdTweetDto.getModified())
                 .location(uriComponents.toUri())
                 .body(createdTweetDto);
@@ -99,16 +99,16 @@ public class TweetController {
     public ResponseEntity<TweetDto>
     updateTweet(@PathVariable("id") String tweetId, @Valid @RequestBody TweetDto tweetDto) {
 
-        Tweet tweet = tweetDto.toEntity();
-        tweet.setId(tweetId);
-        Tweet updatedTweet = tweetService.updateTweet(tweet);
+        Document document = tweetDto.toEntity();
+        document.setId(tweetId);
+        Document updatedDocument = tweetService.updateTweet(document);
 
-        TweetDto updatedTweetDto = updatedTweet.toDto();
+        TweetDto updatedTweetDto = updatedDocument.toDto();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .lastModified(updatedTweetDto.getModified())
-                .eTag(updatedTweet.getEtag())
+                .eTag(updatedDocument.getEtag())
                 .body(updatedTweetDto);
     }
 }

@@ -1,7 +1,7 @@
 package com.esipe.pw.service;
 
 import com.esipe.pw.exception.NotFoundException;
-import com.esipe.pw.model.Tweet;
+import com.esipe.pw.model.Document;
 import com.esipe.pw.repository.CustomTweetRepository;
 import com.esipe.pw.repository.TweetRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -32,40 +32,40 @@ public class TweetService {
     private CustomTweetRepository customTweetRepository;
 
 
-    public Page<Tweet> getTweets(String stringQuery, Pageable pageable) {
+    public Page<Document> getTweets(String stringQuery, Pageable pageable) {
         Criteria criteria = convertQuery(stringQuery);
-        Page<Tweet> results = customTweetRepository.findTweets(criteria, pageable);
+        Page<Document> results = customTweetRepository.findTweets(criteria, pageable);
         return results;
     }
 
-    public Tweet getTweet(String id) {
-        Tweet tweet = tweetRepository.findById(id).orElseThrow(()-> NotFoundException.DEFAULT);
-        return tweet;
+    public Document getTweet(String id) {
+        Document document = tweetRepository.findById(id).orElseThrow(()-> NotFoundException.DEFAULT);
+        return document;
     }
 
-    public Tweet createTweet(Tweet tweet){
-        log.debug("tweedto {}", tweet.toString());
-        Tweet insertedTweet = tweetRepository.insert(tweet);
-        return insertedTweet;
+    public Document createTweet(Document document){
+        log.debug("tweedto {}", document.toString());
+        Document insertedDocument = tweetRepository.insert(document);
+        return insertedDocument;
     }
 
     /**
      * Mise à jour d'un tweet
-     * @param updateTweet
+     * @param updateDocument
      * @return
      */
-    public Tweet updateTweet(Tweet updateTweet) {
-        // on cherche d'abord le tweet si il est présent
-        Tweet tweet = tweetRepository.findById(updateTweet.getId()).orElseThrow(() -> NotFoundException.DEFAULT);
+    public Document updateTweet(Document updateDocument) {
+        // on cherche d'abord le document si il est présent
+        Document document = tweetRepository.findById(updateDocument.getId()).orElseThrow(() -> NotFoundException.DEFAULT);
         // on controle les champs que l'on veut mettre à jour
-        tweet.setSource(updateTweet.getSource());
-        tweet.setText(updateTweet.getText());
-        tweet.setUser(updateTweet.getUser());
+        document.setSource(updateDocument.getSource());
+        document.setText(updateDocument.getText());
+        document.setEditor(updateDocument.getEditor());
         // on le sauvegarde
-        return tweetRepository.save(tweet);
+        return tweetRepository.save(document);
     }
 
-    public Page<Tweet> getTweetsByNickname(String nickname, Pageable pageable) {
+    public Page<Document> getTweetsByNickname(String nickname, Pageable pageable) {
         return tweetRepository.findByName(nickname, pageable);
     }
 
@@ -77,7 +77,7 @@ public class TweetService {
     private Criteria convertQuery(String stringQuery){
         Criteria criteria;
         if(!StringUtils.isEmpty(stringQuery)) {
-            Condition<GeneralQueryBuilder> condition = pipeline.apply(stringQuery, Tweet.class);
+            Condition<GeneralQueryBuilder> condition = pipeline.apply(stringQuery, Document.class);
             criteria = condition.query(new MongoVisitor());
         } else {
             criteria = new Criteria();

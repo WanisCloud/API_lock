@@ -2,7 +2,7 @@ package com.esipe.pw.controller;
 
 
 import com.esipe.pw.dto.PageData;
-import com.esipe.pw.model.Tweet;
+import com.esipe.pw.model.Document;
 import com.esipe.pw.service.TweetService;
 import com.esipe.pw.utils.RestUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class UserController {
                                                        @PageableDefault(page = 0, size = 20) Pageable pageable,
                                                        UriComponentsBuilder uriComponentsBuilder) {
 
-        Page<Tweet> results = tweetService.getTweetsByNickname(nickname, pageable);
+        Page<Document> results = tweetService.getTweetsByNickname(nickname, pageable);
         Page<URI> uriPage = results.map(tweet -> {
             log.debug("my tweet id: {}", tweet.getId());
             UriComponentsBuilder localBuilder = uriComponentsBuilder.cloneBuilder();

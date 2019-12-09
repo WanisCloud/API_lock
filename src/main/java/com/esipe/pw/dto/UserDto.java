@@ -1,6 +1,6 @@
 package com.esipe.pw.dto;
 
-import com.esipe.pw.model.User;
+import com.esipe.pw.model.Editor;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +21,8 @@ public class UserDto {
     @Email
     private String mail;
 
-    public User toEntity() {
-        return User.builder()
+    public Editor toEntity() {
+        return Editor.builder()
                 .mail(mail)
                 .nickname(nickname)
                 .build();

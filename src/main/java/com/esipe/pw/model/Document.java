@@ -8,64 +8,70 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.*;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
+
+//à coordonner avec DocumentSummary; e
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Document
-public class Tweet {
+@org.springframework.data.mongodb.core.mapping.Document
+public class Document {
 
     @Id
     private String id;
     @CreatedDate
     private LocalDateTime created;
     @LastModifiedDate
-    private LocalDateTime modified;
-    @NotBlank(message = "text must not be blank")
-    @Size(max = 256, message = "tweet is max 256 characters")
-    private String text;
-    @NotNull
-    private User user;
+    private LocalDateTime updated;
     @NotNull
     private Source source;
+    @NotNull
+    private String editor;
+    // private User user;
+    @NotNull
+    private String creator;
+    @NotBlank(message = "text must not be blank")
+    private String body;
+    // private String text;
     @Transient
     private String etag;
-
     /**
      * Constructeur utilisé par Spring data
      * On doit le définir car l'attribut etag ne fait pas partie du modèle
      * @param id
-     * @param text
-     * @param user
+     * @param body
+     * @param editor
      * @param source
      * @param created
-     * @param modified
+     * @param updated
+     * @param creator
      */
     @PersistenceConstructor
-    public Tweet(String id, String text, User user,
-                 Source source, LocalDateTime created, LocalDateTime modified) {
+    public Document(String id, String body, String editor, String creator,
+                    Source source, LocalDateTime created, LocalDateTime updated) {
         this.id = id;
-        this.text = text;
+        this.body = body;
         this.source = source;
-        this.user = user;
+        this.editor = editor;
+        this.creator = creator;
         this.created = created;
-        this.modified = modified;
+        this.updated = updated;
     }
 
     public TweetDto toDto() {
         return TweetDto.builder()
                 .id(id)
-                .text(text)
+                .body(body)
                 .created(RestUtils.convertToZoneDateTime(created))
-                .modified(RestUtils.convertToZoneDateTime(modified))
-                .user(user.toDto())
+                .modified(RestUtils.convertToZoneDateTime(updated))
+                .editor(editor.toDto())
+                .creator(creator.toDto())
                 .source(source)
                 .build();
     }

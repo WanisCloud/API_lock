@@ -1,6 +1,6 @@
 package com.esipe.pw.repository;
 
-import com.esipe.pw.model.Tweet;
+import com.esipe.pw.model.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +20,13 @@ public class CustomTweetRepositoryImpl implements CustomTweetRepository {
     MongoTemplate mongoTemplate;
 
     @Override
-    public Page<Tweet> findTweets(Criteria criteria, Pageable pageable) {
+    public Page<Document> findTweets(Criteria criteria, Pageable pageable) {
         Query query = new Query().addCriteria(criteria).with(pageable);
-        List<Tweet> results = mongoTemplate.find(query, Tweet.class);
-        Page<Tweet> tweetPage = PageableExecutionUtils.getPage(
+        List<Document> results = mongoTemplate.find(query, Document.class);
+        Page<Document> tweetPage = PageableExecutionUtils.getPage(
                 results,
                 pageable,
-                () -> mongoTemplate.count(query, Tweet.class));
+                () -> mongoTemplate.count(query, Document.class));
         return tweetPage;
     }
 }

@@ -1,8 +1,7 @@
 package com.esipe.pw.repository;
 
-import com.esipe.pw.model.Tweet;
+import com.esipe.pw.model.Document;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterConvertEvent;
@@ -13,20 +12,20 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
- * Permet de générer automatiquement un etag sur l'objet Tweet
+ * Permet de générer automatiquement un etag sur l'objet Document
  * lors de la création de l'objet par la couche Spring data
  */
 
 @Slf4j
-public class EtagEventListener extends AbstractMongoEventListener<Tweet> {
+public class EtagEventListener extends AbstractMongoEventListener<Document> {
 
     @Override
-    public void onAfterConvert(AfterConvertEvent<Tweet> event) {
+    public void onAfterConvert(AfterConvertEvent<Document> event) {
         event.getSource().setEtag(calculateEtag(event.getDocument()));
     }
 
     @Override
-    public void onAfterSave(AfterSaveEvent<Tweet> event) {
+    public void onAfterSave(AfterSaveEvent<Document> event) {
         event.getSource().setEtag(calculateEtag(event.getDocument()));
     }
 
@@ -35,7 +34,7 @@ public class EtagEventListener extends AbstractMongoEventListener<Tweet> {
      * @param document
      * @return
      */
-    private String calculateEtag(Document document) {
+    private String calculateEtag(org.bson.Document document) {
         StringBuilder stringBuilder = new StringBuilder();
 
         try {

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
-public class User {
+public class Editor {
     @NotBlank
     private String nickname;
     @Email
